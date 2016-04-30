@@ -1,5 +1,5 @@
 # minera
-
+Your personal assistant especially for PFM
 
 ##情報共有
 
