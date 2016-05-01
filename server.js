@@ -56,7 +56,7 @@ var bot = new builder.BotConnectorBot(botConnectorOptions);
 //});
 
 bot.add('/', new builder.CommandDialog()
-    .matches('\d+', function (session) {
+    .matches('[0-9]+', function (session) {
         session.send("このまま登録する?\nはい? いいえ?");
 
         // MongoLabにデータを保存
