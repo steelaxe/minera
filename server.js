@@ -71,7 +71,7 @@ bot.add('/', new builder.CommandDialog()
 //        });
     })
     .onDefault(function (session) {
-        session.send("まずは挨拶してね");
+        session.send("まずは挨拶しろよ、ぼけ");
     }));
 
 
