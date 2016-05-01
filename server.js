@@ -12,17 +12,25 @@ var dialog = new builder.CommandDialog();
 
 // Create bot
 var bot = new builder.BotConnectorBot(botConnectorOptions);
-
-// シンプルな会話:Closure
 //bot.add('/', function (session) {
 //    //respond with user's message
 //    session.send("You said " + session.message.text);
 //});
 
-// マッチした内容によって分岐する会話:CommandDialog
 bot.add('/', new builder.CommandDialog()
-    .matches('^こんにちは', function (session) {
-        session.send("こんばんはでしょうがー！");
+    .matches('^こんばんは', function (session) {
+        session.send("こんにちはでしょうがー！٩(๑`^´๑)۶");
+
+        // MongoLabにデータを保存
+//        var Outgo = mongoose.model('Outgo');
+//        var data = new Outgo();
+//            data.date = moment().toDate();
+//        data.amount = 777;
+//        data.save(function (err) {
+//            if (err) {
+//                console.log(err);
+//            }
+//        });
     })
     .onDefault(function (session) {
         session.send("まずは挨拶してね");
@@ -35,7 +43,7 @@ var server = restify.createServer();
 
 
 // Handle Bot Framework messages
-// /api/messages/が、Bot用のエンドポイントだよーん
+// Bot用のエンドポイントだよーん
 server.post('/api/messages', bot.verifyBotFramework(), bot.listen());
 
 // Serve a static web page
