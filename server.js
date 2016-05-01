@@ -56,8 +56,8 @@ var bot = new builder.BotConnectorBot(botConnectorOptions);
 //});
 
 bot.add('/', new builder.CommandDialog()
-    .matches('^こんばんは', function (session) {
-        session.send("こんにちはでしょうがー！٩(๑`^´๑)۶");
+    .matches('\d+', function (session) {
+        session.send("このまま登録する?\nはい? いいえ?");
 
         // MongoLabにデータを保存
 //        var Outgo = mongoose.model('Outgo');
