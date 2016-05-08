@@ -70,7 +70,7 @@ bot.add('/registration',[
         if(result.response.entity == "はい"){
             session.beginDialog("/choice_category");
         }else{
-            session.send("わかりました。では終了します。");
+            session.endDialog("わかりました。では終了します。");
         }
     }
 ]);
