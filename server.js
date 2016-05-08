@@ -79,7 +79,7 @@ bot.add('/choice_category',[
         builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
     },
     function(session, results){
-        session.endDialog("じゃあ"+ results.response.entity +"として"+session.userData.price+"円で、登録するね");
+        session.endDialog("じゃあ"+ results.response.entity +"として"+session.userData.price+"円で登録するね");
     }
 ]);
 
