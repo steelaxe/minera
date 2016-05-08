@@ -57,7 +57,7 @@ var bot = new builder.BotConnectorBot(botConnectorOptions);
 
 bot.add('/', new builder.CommandDialog()
     .matches('[0-9]+',function (session,response) {
-        bulder.beginDialog("registration");
+        session.beginDialog("/registration");
     })
     .onDefault(function (session) {
         session.send("ごめんなさい。何をいってるのかわかりません。");
@@ -69,7 +69,7 @@ bot.add('/registration',[
     },
     function(session,result){
         if(result.response.entity == "はい"){
-            builder.beginDialog("choice_category");
+            session.beginDialog("/choice_category");
         }else{
             session.send("わかりました。では終了します。");
         }
@@ -79,8 +79,9 @@ bot.add('/choice_category',[
     function(session){
         builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
     },
-    function(session,result){
-        session.send("じゃあ"+results.response.entity+"として登録するね");
+    function(session, results){
+        session.send("じゃあ"+ results.response.entity +"として登録するね");
+        session.endDialog();
     }
 ]);
 
