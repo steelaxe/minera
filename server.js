@@ -37,7 +37,7 @@ conn.on('error', console.error.bind(console, 'connection error:'));
 //支出額のスキーマを宣言
 var OutgoSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
-    amount: Number,
+    price: Number,
     category: String
 });
 //スキーマからモデルを生成。
@@ -57,6 +57,7 @@ var bot = new builder.BotConnectorBot(botConnectorOptions);
 
 bot.add('/', new builder.CommandDialog()
     .matches('[0-9]+',function (session,response) {
+        session.userData.price = session.message.text.replace(/^[0-9]/g,"");
         session.beginDialog("/registration");
     })
     .onDefault(function (session) {
@@ -80,7 +81,7 @@ bot.add('/choice_category',[
         builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
     },
     function(session, results){
-        session.send("じゃあ"+ results.response.entity +"として登録するね");
+        session.send("じゃあ"+ results.response.entity +"として"+session.userData.price+"円で、登録するね");
         session.endDialog();
     }
 ]);
