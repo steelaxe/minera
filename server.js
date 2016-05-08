@@ -56,16 +56,14 @@ var bot = new builder.BotConnectorBot(botConnectorOptions);
 //});
 
 bot.add('/', new builder.CommandDialog()
-    .matches('[0-9]+',function (session,response) {
-        session.userData.price = session.message.text.replace(/[^0-9]/g,"");
-        session.beginDialog("/registration");
-    })
-    .onDefault(function (session) {
+    .matches('[0-9]+',　builder.DialogAction.beginDialog("/registration")).
+    onDefault(function (session) {
         session.send("ごめんなさい。何をいってるのかわかりません。");
     }));
 // session.message.text
 bot.add('/registration',[
     function(session){
+        session.userData.price = session.message.text.replace(/[^0-9]/g,"");
         builder.Prompts.choice(session,"このまま登録する?", "はい|いいえ");
     },
     function(session,result){
@@ -81,8 +79,7 @@ bot.add('/choice_category',[
         builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
     },
     function(session, results){
-        session.send("じゃあ"+ results.response.entity +"として"+session.userData.price+"円で、登録するね");
-        session.endDialog();
+        session.endDialog("じゃあ"+ results.response.entity +"として"+session.userData.price+"円で、登録するね");
     }
 ]);
 
