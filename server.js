@@ -57,7 +57,7 @@ var bot = new builder.BotConnectorBot(botConnectorOptions);
 
 bot.add('/', new builder.CommandDialog()
     .matches('[0-9]+',function (session,response) {
-        session.userData.price = session.message.text.replace(/^[0-9]/g,"");
+        session.userData.price = session.message.text.replace(/[^0-9]/g,"");
         session.beginDialog("/registration");
     })
     .onDefault(function (session) {
