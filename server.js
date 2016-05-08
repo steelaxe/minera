@@ -56,23 +56,33 @@ var bot = new builder.BotConnectorBot(botConnectorOptions);
 //});
 
 bot.add('/', new builder.CommandDialog()
-    .matches('[0-9]+', function (session) {
-        session.send("このまま登録する?\nはい? いいえ?");
-
-        // MongoLabにデータを保存
-//        var Outgo = mongoose.model('Outgo');
-//        var data = new Outgo();
-//            data.date = moment().toDate();
-//        data.amount = 777;
-//        data.save(function (err) {
-//            if (err) {
-//                console.log(err);
-//            }
-//        });
+    .matches('[0-9]+',function (session,response) {
+        bulder.beginDialog("registration");
     })
     .onDefault(function (session) {
-        session.send("まずは挨拶しろよ、ぼけ");
+        session.send("ごめんなさい。何をいってるのかわかりません。");
     }));
+// session.message.text
+bot.add('/registration',[
+    function(session){
+        builder.Prompts.choice(session,"このまま登録する?", "はい|いいえ");
+    },
+    function(session,result){
+        if(result.response.entity == "はい"){
+            builder.beginDialog("choice_category");
+        }else{
+            session.send("わかりました。では終了します。");
+        }
+    }
+]);
+bot.add('/choice_category',[
+    function(session){
+        builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
+    },
+    function(session,result){
+        session.send("じゃあ"+results.response.entity+"として登録するね");
+    }
+]);
 
 
 // Setup Restify Server

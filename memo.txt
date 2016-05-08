@@ -1,0 +1,10 @@
+        // MongoLabにデータを保存
+//        var Outgo = mongoose.model('Outgo');
+//        var data = new Outgo();
+//            data.date = moment().toDate();
+//        data.amount = 777;
+//        data.save(function (err) {
+//            if (err) {
+//                console.log(err);
+//            }
+//        });
