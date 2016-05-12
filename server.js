@@ -7,8 +7,8 @@ var moment = require('moment');
 
 // Get secrets from server environment
 var botConnectorOptions = {
-    appId: "minera",
-    appSecret: "49089815df084653b7306af9cd8ba137"
+    appId: process.env.BOTFRAMEWORK_APPID,
+    appSecret: process.env.BOTFRAMEWORK_APPSECRET
 };
 
 // ************************************************
@@ -99,11 +99,6 @@ server.get(/.*/, restify.serveStatic({
     'directory': '.',
     'default': 'index.html'
 }));
-
-//ちょいとテスト
-console.log( process.env.BOTFRAMEWORK_APPID );
-console.log( process.env.BOTFRAMEWORK_APPSECRET );
-console.log( server.name, server.url );
 
 // サーバ起動やねん
 server.listen(process.env.port || 3978, function () {
