@@ -42,7 +42,8 @@ var OutgoSchema = new mongoose.Schema({
 });
 //スキーマからモデルを生成。
 mongoose.model('Outgo', OutgoSchema);
-
+var Outgo = mongoose.model('Outgo');
+var outgo = new Outgo();
 // ************************************************
 
 // Dialog
@@ -57,6 +58,7 @@ var bot = new builder.BotConnectorBot(botConnectorOptions);
 
 bot.add('/', new builder.CommandDialog()
     .matches('[0-9]+', "/registration").
+    .matches('みせて|show',"/show_items").
     onDefault(function (session) {
         session.send("ごめんなさい。何をいってるのかわかりません。");
     }));
@@ -70,6 +72,10 @@ bot.add('/registration',[
         if(result.response.entity == "はい"){
             session.beginDialog("/choice_category");
         }else{
+            var item = new outgo();
+            item.price = session.userData.price;
+            item.date = new Date();
+            item.save();
             session.endDialog("わかりました。では終了します。");
         }
     }
@@ -79,7 +85,41 @@ bot.add('/choice_category',[
         builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
     },
     function(session, results){
+        var item = new outgo();
+        item.price = session.userData.price;
+        item.category = results.response.entity;
+        item.date = new Date();
+        item.save();
         session.endDialog("では"+ results.response.entity +"として"+session.userData.price+"円で登録します");
+    }
+]);
+
+//アイテム一覧を表示する
+bot.add('/show_items',[
+    function(session){
+        builder.Prompts.choice(session,"期間を指定してください","直近1週間|直近1ヶ月|1年");
+    },
+    function(session,results){
+        var date;
+        var list = "";
+        if(results.response.entity == "直近1週間"){
+            date = moment().subtract('1','weeks').toDate();
+        }else if(results.response.entity == "直近1ヶ月"){
+            date = moment().subtract('1','months').toDate();
+        }else{
+            date = moment().subtract('1','years').toDate();
+        }
+        outgo.find({date:{$gt:date}},function(err,docs){
+            docs.forEach(function(doc){
+                list += "日付:"+
+                    moment(doc.date).format("YYYY/mm/dd")+
+                    " カテゴリー:"+
+                    doc.category+
+                    " 値段"+
+                    doc.price+"\n";
+            });
+            session.endDialog("アイテム一覧です\n"+list);
+        });
     }
 ]);
 
