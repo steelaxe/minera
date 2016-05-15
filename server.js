@@ -69,7 +69,9 @@ bot.add('/registration',[
     },
     function(session,result){
         if(result.response.entity == "はい"){
+            // Dialogの入れ子、挙動がおかしい。registration Dialogが終わらない。
             session.beginDialog("/choice_category");
+            session.endDialog(); // /registration階層でも、endDialog()しなければいけない？
         }else{
             var item = new Outgo();
             item.price = parseInt(session.userData.price);
