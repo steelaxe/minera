@@ -77,9 +77,9 @@ bot.add('/registration',[
             item.price = parseInt(session.userData.price);
             item.date = new Date();
             item.save();
-            session.send("カテゴリーなしで登録しました。");
+            session.endDialog("カテゴリーなしで登録しました。");
         }
-        session.endDialog("登録を終わります。"); // /registration階層のendDialogはここで行う？
+        //session.endDialog("登録を終わります。"); // /registration階層のendDialogはここで行う？
     }
 ]);
 
@@ -95,7 +95,7 @@ bot.add('/choice_category',[
         item.category = results.response.entity;
         item.date = new Date();
         item.save();
-        session.send("では"+ results.response.entity +"として"+session.userData.price+"円で登録します");
+        session.endDialog("では"+ results.response.entity +"として"+session.userData.price+"円で登録します");
     }
 ]);
 
