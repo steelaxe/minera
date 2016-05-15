@@ -43,7 +43,6 @@ var OutgoSchema = new mongoose.Schema({
 //スキーマからモデルを生成。
 mongoose.model('Outgo', OutgoSchema);
 var Outgo = mongoose.model('Outgo');
-var outgo = new Outgo();
 // ************************************************
 
 // Dialog
@@ -85,7 +84,7 @@ bot.add('/choice_category',[
         builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
     },
     function(session, results){
-        var item = new outgo();
+        var item = new Outgo();
         item.price = session.userData.price;
         item.category = results.response.entity;
         item.date = new Date();
