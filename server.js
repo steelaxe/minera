@@ -72,7 +72,7 @@ bot.add('/registration',[
             session.beginDialog("/choice_category");
         }else{
             var item = new Outgo();
-            item.price = session.userData.price;
+            item.price = parseInt(session.userData.price);
             item.date = new Date();
             item.save();
             session.endDialog("わかりました。では終了します。");
@@ -85,7 +85,7 @@ bot.add('/choice_category',[
     },
     function(session, results){
         var item = new Outgo();
-        item.price = session.userData.price;
+        item.price = parseInt(session.userData.price);
         item.category = results.response.entity;
         item.date = new Date();
         item.save();
