@@ -57,9 +57,9 @@ var bot = new builder.BotConnectorBot(botConnectorOptions);
 //});
 
 bot.add('/', new builder.CommandDialog()
-    .matches('[0-9]+', "/registration").
-    .matches('みせて|show',"/show_items").
-    onDefault(function (session) {
+    .matches('[0-9]+', "/registration")
+    .matches('みせて|show',"/show_items")
+    .onDefault(function (session) {
         session.send("ごめんなさい。何をいってるのかわかりません。");
     }));
 // session.message.text
