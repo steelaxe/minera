@@ -71,7 +71,7 @@ bot.add('/registration',[
         if(result.response.entity == "はい"){
             session.beginDialog("/choice_category");
         }else{
-            var item = new outgo();
+            var item = new Outgo();
             item.price = session.userData.price;
             item.date = new Date();
             item.save();
@@ -108,7 +108,7 @@ bot.add('/show_items',[
         }else{
             date = moment().subtract('1','years').toDate();
         }
-        outgo.find({date:{$gt:date}},function(err,docs){
+        Outgo.find({date:{$gt:date}},function(err,docs){
             docs.forEach(function(doc){
                 list += "日付:"+
                     moment(doc.date).format("YYYY/mm/dd")+
