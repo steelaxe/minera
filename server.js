@@ -70,9 +70,10 @@ bot.add('/registration',[
     function(session,results){
 
         if(results.response.entity == "はい"){
-            // Dialogの入れ子、挙動がおかしい。registration Dialogが終わらない。
-            //session.beginDialog("/choice_category");
+
+            // 質問をして、次の処理へ
             builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
+
         }else{
             var item = new Outgo();
             // 価格あり,カテゴリーなし で、DBに登録
@@ -81,9 +82,12 @@ bot.add('/registration',[
             item.save();
             session.endDialog("カテゴリーなしで登録しました。");
         }
-        //session.endDialog("登録を終わります。"); // /registration階層のendDialogはここで行う？
+
     },
     function(session,results){
+
+        // 「何のお金?」の回答が返ってきた後
+
         //価格あり,カテゴリーあり で、DBに登録
         var item = new Outgo();
         item.price = parseInt(session.userData.price);
