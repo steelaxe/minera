@@ -65,33 +65,37 @@ bot.add('/', new builder.CommandDialog()
 bot.add('/registration',[
     function(session){
         session.userData.price = session.message.text.replace(/[^0-9]/g,"");
-        builder.Prompts.choice(session,"このまま登録する?", "はい|いいえ");
+        builder.Prompts.choice(session,"カテゴリーを登録する?", "はい|いいえ");
     },
     function(session,result){
         if(result.response.entity == "はい"){
             // Dialogの入れ子、挙動がおかしい。registration Dialogが終わらない。
             session.beginDialog("/choice_category");
-            session.endDialog(); // /registration階層でも、endDialog()しなければいけない？
         }else{
             var item = new Outgo();
+            // 価格あり,カテゴリーなし で、DBに登録
             item.price = parseInt(session.userData.price);
             item.date = new Date();
             item.save();
-            session.endDialog("わかりました。では終了します。");
+            session.send("カテゴリーなしで登録しました。");
         }
+        session.endDialog("登録を終わります。"); // /registration階層のendDialogはここで行う？
     }
 ]);
+
+// カテゴリーを選択する
 bot.add('/choice_category',[
     function(session){
         builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
     },
     function(session, results){
+        // 価格あり,カテゴリーあり で、DBに登録
         var item = new Outgo();
         item.price = parseInt(session.userData.price);
         item.category = results.response.entity;
         item.date = new Date();
         item.save();
-        session.endDialog("では"+ results.response.entity +"として"+session.userData.price+"円で登録します");
+        session.send("では"+ results.response.entity +"として"+session.userData.price+"円で登録します");
     }
 ]);
 
