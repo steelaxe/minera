@@ -112,13 +112,13 @@ bot.add('/show_items',[
         Outgo.find({date:{$gt:date}},function(err,docs){
             docs.forEach(function(doc){
                 list += "日付:"+
-                    moment(doc.date).format("YYYY/mm/dd")+
+                    moment(doc.date).format("YYYY/MM/DD(ddd)")+
                     " カテゴリー:"+
                     doc.category+
                     " 値段"+
-                    doc.price+"\n";
+                    doc.price+"\n\n";
             });
-            session.endDialog("アイテム一覧です\n"+list);
+            session.endDialog("アイテム一覧です\n\n"+list);
         });
     }
 ]);
