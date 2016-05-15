@@ -28,7 +28,7 @@ var options = {
         }
     }
 };
-var mongodbUri = 'mongodb://bot:cC7fAu8S@ds032319.mlab.com:32319/my-bot-db';
+var mongodbUri = 'mongodb://bot:cC7fAu8S@ds055905.mlab.com:55905/minera-db';
 
 mongoose.connect(mongodbUri, options);
 var conn = mongoose.connection;
