@@ -105,7 +105,6 @@ bot.add('/show_items',[
         builder.Prompts.choice(session,"期間を指定してください","直近1週間|直近1ヶ月|1年");
     },
     function(session,results){
-        console.log("test");
         var date;
         var list = "";
         if(results.response.entity == "直近1週間"){
