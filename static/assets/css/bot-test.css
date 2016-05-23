@@ -97,11 +97,11 @@ body._recoading #MicButton i {
 }
 /* 相手の発言 */
 
-.chatView-item.from_qavppytestbot {
+.chatView-item.from_minera {
     text-align: left;
 }
 
-.chatView-item.from_qavppytestbot span {
+.chatView-item.from_minera span {
     background-color: #ffffff;
     color: #575757;
 }
