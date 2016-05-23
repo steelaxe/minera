@@ -131,7 +131,6 @@ bot.add('/show_items',[
 
 
 // Setup Restify Server
-// Restifyをセットアップ。Restifyってなんだ・・・？
 var server = restify.createServer();
 
 
@@ -142,7 +141,7 @@ server.post('/api/messages', bot.verifyBotFramework(), bot.listen());
 // Serve a static web page
 // Webブラウザでアクセスされた時には、静的HTMLを表示させる
 server.get(/.*/, restify.serveStatic({
-    'directory': '.',
+    'directory': './static/',
     'default': 'index.html'
 }));
 
