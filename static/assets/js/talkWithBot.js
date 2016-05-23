@@ -1,7 +1,7 @@
 var talkWithBot = (function () {
 
     // トークンの指定
-    var directLineToken = "bmajOXKAU1E.cwA.Ugw.ZuGX7ovAxYp2Uly77Xw7_BoRBqrTZhiX7OXwZnU6pIg";
+    var directLineToken = "RHAURwUwFTk.cwA.H-o.FiXWrH_MjDfwE8GDk1Js2joMvYO5GzGGlNXtyfEKD3w";
 
     return {
 
