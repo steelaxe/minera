@@ -76,7 +76,7 @@ bot.add('/', new builder.CommandDialog()
 
 bot.add('/test',[
     function(session){
-        sheet.addRow( 1, { "A": '値'} );
+        my_sheet.addRow( 1, { "A": '値'} );
         session.endDialog("書き込んだよ");
     }
 ]);
