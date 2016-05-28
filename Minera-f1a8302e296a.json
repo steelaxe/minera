@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "minera-1325",
+  "private_key_id": "f1a8302e296a02789707a051abed8f01cb785226",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCX/bWey8WF3jRL\nC7kGDG9nAtCJkGX7T4hsQ0foMcUtlvLksbSu+EhUC+I2jjXieqkmjGTO0WEehzgx\n58RalX/chi9okveqc5RkARszyJyxc8vudlWWIKYDKlvq7GzUPUNVaumr+NzqdRzI\n3UOVryHjuWk/uJEDkOZY9bm3bYi7GhBsoawaDbLVVbSKIcKoLW34mlwiUyiaYSNf\nLkR81xuYW4qOYsPa+ibiESFg6sJc7nBt2l9djp1Yb7OaCphckfWOteyCcQuv+FLo\nqUgEHOqXiUuAb+mqSpUutd4Rj+LMsI8w8aNabHELuYkpTQXJQVkUF4t/BanBcT6U\nlqA62RVxAgMBAAECggEAVM6kAK8Cz+dklls8KjvWDUxsv9VqkgeWv5HrFYxv0Thg\n32qovtiawwq+dmJzfqOirne36A68eiRJHs+LqF+ysIHPAjK/LsS/D+3uF77gb8OF\nDtHIf7RH7Yw9LaAuOV7Vq1u0dtitq8UdApczltnZtw9FwuBhSfQYE5tIvSjJGlxb\ngeMZR9Av2D7BtD41egZNf8aIwJ0Dkj4TfRgIncuMRe40EJHxDmEWn9igPWoplch6\nNNiEdkv9tJon7Wf9xdIpJy24QXY2UkPbHe6ShuCP1syTTaaRZTKxbt+m9NMamknp\nCT/HqfUw8/1ddwi+T7w+dPR4RTVF4Z34bm+bNLG14QKBgQDaBLymLaiL+PPTeBlT\n5LQ2yXS3oUWoerllVjTmSIkelHCe5CyfZEL7MElDnkbJ+MgmKUoLnqSg6ruXT359\nrlTQ7MTaxRh0bHalFEsGhWxk0ne36nebjyS4YQtcjgoolny9Y1fQWzkiDORe35+s\nkCo+fXfu1LIL1HqaH5yj41zHuwKBgQCyeEIGkzl4WHGaXu3DGxhixQt8BK5DI569\nyfGLFGiTjAyQ1TzLsXMzh1WAv9LMNBUnDyv04ZP9brZuV4qDiar6ANKM5qH1kr0e\ncZAnPwvDmqRLqNSi7XmZlguUBSj8mKDIUO1vA+1IGTkRgK/U0sAyRSveWQYyLecP\nAQudqaq2wwKBgDpoxnnnBZ7qhbiEFpUJUtbSxjhkNptatczWebmweTv+HOYUz3es\njt1pJFe/UcvOoSDIMxRF3mlWOgfhvkvBpuuKY3sRDuoyHN9BPpBysoWYdYaKhJzi\njr3vEfIsA8C4AJdkxCQILJhYx947HzZGMWsohjcwOLs+o9Ii4f5ubW79AoGAS5k3\nVrOsh3bngF2v15K1rLkNGVaePqBrELfnUmOtvLp5ZCx/mUUsqGouZOBcudViFG6P\nzyZy2sq4CluYuAlr3ITWq4rSlkS3SZsPViCVqiDqcYYttGpltRJjCyt4Zi99A/2L\n5hfCvmS40NozITK46VJ1t7T8M+tP0gI+WmXRg6MCgYA8FHmDUIpZQQUdp04D5Eqh\nQ/xYkDsEXXOt9P1xogrjQaEEDRrCFvGmRCT5XQiZgVzZog0X3d/85yV3pm/5q38J\nB1F+SMil/A9xvx9uU8dd9a9pUQjkuuhbXz334X8Pv6jbvQs1QuyxTEsdiGaZyi+G\nYZDsCmFoGjyh6anvnLv+zQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "minera-connect-with-spread-she@minera-1325.iam.gserviceaccount.com",
+  "client_id": "117647790167959906878",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/minera-connect-with-spread-she%40minera-1325.iam.gserviceaccount.com"
+}
