@@ -7,10 +7,11 @@ var GoogleSpreadsheet = require('google-spreadsheet');
 var sync = require("synchronize");
 var credentials = require("./"+pkg.spreadsheet.credentials);
 var my_sheet = new GoogleSpreadsheet(pkg.spreadsheet.id);
-var sheet;
+
 sync.fiber(function(){
-    var test = sync.await(my_sheet.useServiceAccountAuth(credentials),sync.defer());
+    var test = sync.await(my_sheet.useServiceAccountAuth(credentials,sync.defer()));
     var sheet = sync.await(my_sheet.getInfo(sync.defer()));
+    //console.log(sheet);
 
     // ************************************************
 
@@ -74,6 +75,7 @@ sync.fiber(function(){
 
     bot.add('/test',[
         function(session){
+            console.log(sheet);
             sheet.addRow( 1, { "A": '値'} );
             session.endDialog("書き込んだよ");
         }
