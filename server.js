@@ -69,9 +69,18 @@ var bot = new builder.BotConnectorBot(botConnectorOptions);
 bot.add('/', new builder.CommandDialog()
     .matches('[0-9]+', "/registration")
     .matches('みせて|show',"/show_items")
+    .matches('テスト',"/test")
     .onDefault(function (session) {
         session.send("ごめんなさい。何をいってるのかわかりません。");
     }));
+
+bot.add('/test',[
+    function(session){
+        sheet.addRow( 1, { "A": '値'} );
+        session.endDialog("書き込んだよ");
+    }
+]);
+
 // session.message.text
 bot.add('/registration',[
     function(session){
