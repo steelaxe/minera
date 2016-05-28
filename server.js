@@ -4,167 +4,166 @@ var mongoose = require('mongoose');
 var moment = require('moment');
 var pkg = require('./package.json');
 var GoogleSpreadsheet = require('google-spreadsheet');
+var sync = require("synchronize");
 var credentials = require("./"+pkg.spreadsheet.credentials);
 var my_sheet = new GoogleSpreadsheet(pkg.spreadsheet.id);
 var sheet;
-my_sheet.useServiceAccountAuth(credentials, function(err){
-    my_sheet.getInfo(function(err, data){
-      console.log(data);
-      sheet = data;
+sync.fiber(function(){
+    var test = sync.await(my_sheet.useServiceAccountAuth(credentials),sync.defer());
+    var sheet = sync.await(my_sheet.getInfo(sync.defer()));
+
+    // ************************************************
+
+    // Get secrets from server environment
+    var botConnectorOptions = {
+        appId: process.env.BOTFRAMEWORK_APPID,
+        appSecret: process.env.BOTFRAMEWORK_APPSECRET
+    };
+
+    // ************************************************
+
+    // MongoLabの設定
+    var options = {
+        server: {
+            socketOptions: {
+                keepAlive: 300000,
+                connectTimeoutMS: 30000
+            }
+        },
+        replset: {
+            socketOptions: {
+                keepAlive: 300000,
+                connectTimeoutMS: 30000
+            }
+        }
+    };
+    var mongodbUri = 'mongodb://bot:cC7fAu8S@ds055905.mlab.com:55905/minera-db';
+
+    mongoose.connect(mongodbUri, options);
+    var conn = mongoose.connection;
+    conn.on('error', console.error.bind(console, 'connection error:'));
+
+    //支出額のスキーマを宣言
+    var OutgoSchema = new mongoose.Schema({
+        date: { type: Date, default: Date.now },
+        price: Number,
+        category: String
     });
-});
+    //スキーマからモデルを生成。
+    mongoose.model('Outgo', OutgoSchema);
+    var Outgo = mongoose.model('Outgo');
+    // ************************************************
 
-// ************************************************
+    // Dialog
+    var dialog = new builder.CommandDialog();
 
-// Get secrets from server environment
-var botConnectorOptions = {
-    appId: process.env.BOTFRAMEWORK_APPID,
-    appSecret: process.env.BOTFRAMEWORK_APPSECRET
-};
+    // Create bot
+    var bot = new builder.BotConnectorBot(botConnectorOptions);
+    //bot.add('/', function (session) {
+    //    //respond with user's message
+    //    session.send("You said " + session.message.text);
+    //});
 
-// ************************************************
+    bot.add('/', new builder.CommandDialog()
+        .matches('[0-9]+', "/registration")
+        .matches('みせて|show',"/show_items")
+        .matches('テスト',"/test")
+        .onDefault(function (session) {
+            session.send("ごめんなさい。何をいってるのかわかりません。");
+        }));
 
-// MongoLabの設定
-var options = {
-    server: {
-        socketOptions: {
-            keepAlive: 300000,
-            connectTimeoutMS: 30000
+    bot.add('/test',[
+        function(session){
+            sheet.addRow( 1, { "A": '値'} );
+            session.endDialog("書き込んだよ");
         }
-    },
-    replset: {
-        socketOptions: {
-            keepAlive: 300000,
-            connectTimeoutMS: 30000
-        }
-    }
-};
-var mongodbUri = 'mongodb://bot:cC7fAu8S@ds055905.mlab.com:55905/minera-db';
+    ]);
 
-mongoose.connect(mongodbUri, options);
-var conn = mongoose.connection;
-conn.on('error', console.error.bind(console, 'connection error:'));
+    // session.message.text
+    bot.add('/registration',[
+        function(session){
+            session.userData.price = session.message.text.replace(/[^0-9]/g,"");
+            builder.Prompts.choice(session,"カテゴリーを登録する?", "はい|カテゴリーなしで登録");
+        },
+        function(session,results){
 
-//支出額のスキーマを宣言
-var OutgoSchema = new mongoose.Schema({
-    date: { type: Date, default: Date.now },
-    price: Number,
-    category: String
-});
-//スキーマからモデルを生成。
-mongoose.model('Outgo', OutgoSchema);
-var Outgo = mongoose.model('Outgo');
-// ************************************************
+            if(results.response.entity == "はい"){
 
-// Dialog
-var dialog = new builder.CommandDialog();
+                // 質問をして、次の処理へ
+                builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
 
-// Create bot
-var bot = new builder.BotConnectorBot(botConnectorOptions);
-//bot.add('/', function (session) {
-//    //respond with user's message
-//    session.send("You said " + session.message.text);
-//});
+            }else{
+                var item = new Outgo();
+                // 価格あり,カテゴリーなし で、DBに登録
+                item.price = parseInt(session.userData.price);
+                item.date = new Date();
+                item.save();
+                session.endDialog("カテゴリーなしで登録しました。");
+            }
 
-bot.add('/', new builder.CommandDialog()
-    .matches('[0-9]+', "/registration")
-    .matches('みせて|show',"/show_items")
-    .matches('テスト',"/test")
-    .onDefault(function (session) {
-        session.send("ごめんなさい。何をいってるのかわかりません。");
-    }));
+        },
+        function(session,results){
 
-bot.add('/test',[
-    function(session){
-        my_sheet.addRow( pkg.spreadsheet.id, { "A": '値'} );
-        session.endDialog("書き込んだよ");
-    }
-]);
+            // 「何のお金?」の回答が返ってきた後
 
-// session.message.text
-bot.add('/registration',[
-    function(session){
-        session.userData.price = session.message.text.replace(/[^0-9]/g,"");
-        builder.Prompts.choice(session,"カテゴリーを登録する?", "はい|カテゴリーなしで登録");
-    },
-    function(session,results){
-
-        if(results.response.entity == "はい"){
-
-            // 質問をして、次の処理へ
-            builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
-
-        }else{
+            //価格あり,カテゴリーあり で、DBに登録
             var item = new Outgo();
-            // 価格あり,カテゴリーなし で、DBに登録
             item.price = parseInt(session.userData.price);
+            item.category = results.response.entity;
             item.date = new Date();
             item.save();
-            session.endDialog("カテゴリーなしで登録しました。");
+            session.endDialog("では"+ results.response.entity +"として"+session.userData.price+"円で登録します");
         }
-
-    },
-    function(session,results){
-
-        // 「何のお金?」の回答が返ってきた後
-
-        //価格あり,カテゴリーあり で、DBに登録
-        var item = new Outgo();
-        item.price = parseInt(session.userData.price);
-        item.category = results.response.entity;
-        item.date = new Date();
-        item.save();
-        session.endDialog("では"+ results.response.entity +"として"+session.userData.price+"円で登録します");
-    }
-]);
+    ]);
 
 
-//アイテム一覧を表示する
-bot.add('/show_items',[
-    function(session){
-        builder.Prompts.choice(session,"期間を指定してください","直近1週間|直近1ヶ月|1年");
-    },
-    function(session,results){
-        var date;
-        var list = "";
-        if(results.response.entity == "直近1週間"){
-            date = moment().subtract('1','weeks').toDate();
-        }else if(results.response.entity == "直近1ヶ月"){
-            date = moment().subtract('1','months').toDate();
-        }else{
-            date = moment().subtract('1','years').toDate();
-        }
-        Outgo.find({date:{$gt:date}},function(err,docs){
-            docs.forEach(function(doc){
-                list += "日付:"+
-                    moment(doc.date).format("YYYY/MM/DD(ddd)")+
-                    " カテゴリー:"+
-                    doc.category+
-                    " 値段"+
-                    doc.price+"\n\n";
+    //アイテム一覧を表示する
+    bot.add('/show_items',[
+        function(session){
+            builder.Prompts.choice(session,"期間を指定してください","直近1週間|直近1ヶ月|1年");
+        },
+        function(session,results){
+            var date;
+            var list = "";
+            if(results.response.entity == "直近1週間"){
+                date = moment().subtract('1','weeks').toDate();
+            }else if(results.response.entity == "直近1ヶ月"){
+                date = moment().subtract('1','months').toDate();
+            }else{
+                date = moment().subtract('1','years').toDate();
+            }
+            Outgo.find({date:{$gt:date}},function(err,docs){
+                docs.forEach(function(doc){
+                    list += "日付:"+
+                        moment(doc.date).format("YYYY/MM/DD(ddd)")+
+                        " カテゴリー:"+
+                        doc.category+
+                        " 値段"+
+                        doc.price+"\n\n";
+                });
+                session.endDialog("アイテム一覧です\n\n"+list);
             });
-            session.endDialog("アイテム一覧です\n\n"+list);
-        });
-    }
-]);
+        }
+    ]);
 
 
-// Setup Restify Server
-var server = restify.createServer();
+    // Setup Restify Server
+    var server = restify.createServer();
 
 
-// Handle Bot Framework messages
-// Bot用のエンドポイントだよーん
-server.post('/api/messages', bot.verifyBotFramework(), bot.listen());
+    // Handle Bot Framework messages
+    // Bot用のエンドポイントだよーん
+    server.post('/api/messages', bot.verifyBotFramework(), bot.listen());
 
-// Serve a static web page
-// Webブラウザでアクセスされた時には、静的HTMLを表示させる
-server.get(/.*/, restify.serveStatic({
-    'directory': './static/',
-    'default': 'index.html'
-}));
+    // Serve a static web page
+    // Webブラウザでアクセスされた時には、静的HTMLを表示させる
+    server.get(/.*/, restify.serveStatic({
+        'directory': './static/',
+        'default': 'index.html'
+    }));
 
-// サーバ起動やねん
-server.listen(process.env.port || 3978, function () {
-    console.log('%s listening to %s', server.name, server.url);
+    // サーバ起動やねん
+    server.listen(process.env.port || 3978, function () {
+        console.log('%s listening to %s', server.name, server.url);
+    });
 });
