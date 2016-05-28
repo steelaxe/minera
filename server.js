@@ -3,14 +3,42 @@ var builder = require('botbuilder');
 var mongoose = require('mongoose');
 var moment = require('moment');
 var pkg = require('./package.json');
-var GoogleSpreadsheet = require('google-spreadsheet');
+var Spreadsheet = require('edit-google-spreadsheet');
 var sync = require("synchronize");
-var credentials = require("./"+pkg.spreadsheet.credentials);
-var my_sheet = new GoogleSpreadsheet(pkg.spreadsheet.id);
 
-sync.fiber(function(){
-    var test = sync.await(my_sheet.useServiceAccountAuth(credentials,sync.defer()));
-    var sheet = sync.await(my_sheet.getInfo(sync.defer()));
+console.log(pkg);
+
+var spreadsheetId = pkg.setting.spreadsheetId;
+var client_id = pkg.setting.client_id;
+var client_secret = pkg.setting.client_secret;
+var refresh_token = pkg.setting.refresh_token;
+
+
+Spreadsheet.load({
+        debug: true,
+        spreadsheetId: spreadsheetId,
+        worksheetId: 'od6', //シート1枚目はod6と決まっている模様
+        // OAuth2
+        oauth2: {
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "refresh_token": refresh_token
+        }
+    },
+    function sheetReady(err, spreadsheet) {
+        if (err) throw err;
+
+        spreadsheet.receive(function (err, rows, info) {
+            if (err) throw err;
+            console.log("Found rows:", rows);
+            // Found rows: { '3': { '5': 'hello!' } }
+        });
+    });
+
+
+sync.fiber(function () {
+    //var test = sync.await(my_sheet.useServiceAccountAuth(credentials, sync.defer()));
+    //var sheet = sync.await(my_sheet.getInfo(sync.defer()));
     //console.log(sheet);
 
     // ************************************************
@@ -46,7 +74,10 @@ sync.fiber(function(){
 
     //支出額のスキーマを宣言
     var OutgoSchema = new mongoose.Schema({
-        date: { type: Date, default: Date.now },
+        date: {
+            type: Date,
+            default: Date.now
+        },
         price: Number,
         category: String
     });
@@ -67,34 +98,36 @@ sync.fiber(function(){
 
     bot.add('/', new builder.CommandDialog()
         .matches('[0-9]+', "/registration")
-        .matches('みせて|show',"/show_items")
-        .matches('テスト',"/test")
+        .matches('みせて|show', "/show_items")
+        .matches('テスト', "/test")
         .onDefault(function (session) {
             session.send("ごめんなさい。何をいってるのかわかりません。");
         }));
 
-    bot.add('/test',[
-        function(session){
+    bot.add('/test', [
+        function (session) {
             console.log(sheet);
-            sheet.addRow( 1, { "A": '値'} );
+            sheet.addRow(1, {
+                "A": '値'
+            });
             session.endDialog("書き込んだよ");
         }
     ]);
 
     // session.message.text
-    bot.add('/registration',[
-        function(session){
-            session.userData.price = session.message.text.replace(/[^0-9]/g,"");
-            builder.Prompts.choice(session,"カテゴリーを登録する?", "はい|カテゴリーなしで登録");
+    bot.add('/registration', [
+        function (session) {
+            session.userData.price = session.message.text.replace(/[^0-9]/g, "");
+            builder.Prompts.choice(session, "カテゴリーを登録する?", "はい|カテゴリーなしで登録");
         },
-        function(session,results){
+        function (session, results) {
 
-            if(results.response.entity == "はい"){
+            if (results.response.entity == "はい") {
 
                 // 質問をして、次の処理へ
-                builder.Prompts.choice(session,"何のお金?", "服|交際費|食費|雑費");
+                builder.Prompts.choice(session, "何のお金?", "服|交際費|食費|雑費");
 
-            }else{
+            } else {
                 var item = new Outgo();
                 // 価格あり,カテゴリーなし で、DBに登録
                 item.price = parseInt(session.userData.price);
@@ -104,7 +137,7 @@ sync.fiber(function(){
             }
 
         },
-        function(session,results){
+        function (session, results) {
 
             // 「何のお金?」の回答が返ってきた後
 
@@ -114,36 +147,40 @@ sync.fiber(function(){
             item.category = results.response.entity;
             item.date = new Date();
             item.save();
-            session.endDialog("では"+ results.response.entity +"として"+session.userData.price+"円で登録します");
+            session.endDialog("では" + results.response.entity + "として" + session.userData.price + "円で登録します");
         }
     ]);
 
 
     //アイテム一覧を表示する
-    bot.add('/show_items',[
-        function(session){
-            builder.Prompts.choice(session,"期間を指定してください","直近1週間|直近1ヶ月|1年");
+    bot.add('/show_items', [
+        function (session) {
+            builder.Prompts.choice(session, "期間を指定してください", "直近1週間|直近1ヶ月|1年");
         },
-        function(session,results){
+        function (session, results) {
             var date;
             var list = "";
-            if(results.response.entity == "直近1週間"){
-                date = moment().subtract('1','weeks').toDate();
-            }else if(results.response.entity == "直近1ヶ月"){
-                date = moment().subtract('1','months').toDate();
-            }else{
-                date = moment().subtract('1','years').toDate();
+            if (results.response.entity == "直近1週間") {
+                date = moment().subtract('1', 'weeks').toDate();
+            } else if (results.response.entity == "直近1ヶ月") {
+                date = moment().subtract('1', 'months').toDate();
+            } else {
+                date = moment().subtract('1', 'years').toDate();
             }
-            Outgo.find({date:{$gt:date}},function(err,docs){
-                docs.forEach(function(doc){
-                    list += "日付:"+
-                        moment(doc.date).format("YYYY/MM/DD(ddd)")+
-                        " カテゴリー:"+
-                        doc.category+
-                        " 値段"+
-                        doc.price+"\n\n";
+            Outgo.find({
+                date: {
+                    $gt: date
+                }
+            }, function (err, docs) {
+                docs.forEach(function (doc) {
+                    list += "日付:" +
+                        moment(doc.date).format("YYYY/MM/DD(ddd)") +
+                        " カテゴリー:" +
+                        doc.category +
+                        " 値段" +
+                        doc.price + "\n\n";
                 });
-                session.endDialog("アイテム一覧です\n\n"+list);
+                session.endDialog("アイテム一覧です\n\n" + list);
             });
         }
     ]);

@@ -1,24 +1,26 @@
 {
-  "name": "mybottest",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "botbuilder": "^0.9.2",
-    "moment": "^2.13.0",
-    "mongoose": "^4.4.14",
-    "restify": "^4.0.4",
-    "google-spreadsheet": "*",
-    "synchronize": "*"
-  },
-  "spreadsheet":{
-      "id":"1m-T4S9edbObi51mO-dqL4MJPrqIWwGpBwYP_EfZQGxo",
-      "credentials":"Minera-f1a8302e296a.json"
-  },
-  "private": true
+    "name": "mybottest",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "botbuilder": "^0.9.2",
+        "moment": "^2.13.0",
+        "mongoose": "^4.4.14",
+        "restify": "^4.0.4",
+        "synchronize": "*",
+        "edit-google-spreadsheet": "*"
+    },
+    "setting": {
+        "client_id": "1012713556126-mens7da9jr71b75r5f6g0fn47cei90rc.apps.googleusercontent.com",
+        "client_secret": "5EaQ96pseJFJbvGgUudbLR0W",
+        "refresh_token": "1/4y-zSu-IJt-XflMghTRhLR5Fj71Y_3VHTjsxyg_XICE",
+        "spreadsheetId": "1m-T4S9edbObi51mO-dqL4MJPrqIWwGpBwYP_EfZQGxo"
+    },
+    "private": true
 }
