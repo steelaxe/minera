@@ -15,5 +15,9 @@
     "restify": "^4.0.4",
     "google-spreadsheet": "*"
   },
-    "private": true
+  "spreadsheet":{
+      "id":"1m-T4S9edbObi51mO-dqL4MJPrqIWwGpBwYP_EfZQGxo",
+      "credentials":"qavppy-cloud-vision-123-0028a69d50b4.json"
+  },
+  "private": true
 }

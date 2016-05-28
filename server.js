@@ -2,6 +2,17 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var mongoose = require('mongoose');
 var moment = require('moment');
+var pkg = require('package.json');
+var GoogleSpreadsheet = require('google-spreadsheet');
+var credentials = require(pkg.spreadsheet.credentials);
+var my_sheet = new GoogleSpreadsheet(pkg.spreadsheet.id);
+var sheet;
+my_sheet.useServiceAccountAuth(credentials, function(err){
+    my_sheet.getInfo(function(err, data){
+      console.log(data);
+      sheet = data;
+    });
+});
 
 // ************************************************
 
