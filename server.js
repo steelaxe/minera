@@ -76,7 +76,7 @@ bot.add('/', new builder.CommandDialog()
 
 bot.add('/test',[
     function(session){
-        sheet.addRow( 1, { "A": '値'} );
+        sheet.addRow( pkg.spreadsheet.id, { "A": '値'} );
         session.endDialog("書き込んだよ");
     }
 ]);
